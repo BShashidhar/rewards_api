@@ -8,6 +8,7 @@ import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -20,14 +21,10 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/api/rewards")
 @Validated
 @Tag(name = "Rewards", description = "Customer rewards point operations")
+@RequiredArgsConstructor
 public class RewardsController {
 
     private final RewardsService rewardsService;
-
-    /** Creates a controller backed by the rewards service. */
-    public RewardsController(RewardsService rewardsService) {
-        this.rewardsService = rewardsService;
-    }
 
     /** Returns monthly and total points for a customer. */
     @GetMapping("/{customerId}")

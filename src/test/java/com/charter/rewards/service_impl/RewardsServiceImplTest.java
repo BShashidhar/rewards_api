@@ -12,6 +12,7 @@ import com.charter.rewards.repository.CustomerRepository;
 import com.charter.rewards.repository.PurchaseRepository;
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.time.YearMonth;
 import java.util.List;
 import java.util.Optional;
 import org.junit.jupiter.api.Test;
@@ -56,15 +57,18 @@ class RewardsServiceImplTest {
     void aggregatesMultipleTransactionsAcrossDynamicMonths() {
         Customer customer = new Customer("Test Customer");
         when(customerRepository.findById(1L)).thenReturn(Optional.of(customer));
-        when(purchaseRepository.findByCustomerIdOrderByPurchaseDate(1L)).thenReturn(List.of(
-                new Purchase(1L, LocalDate.of(2026, 3, 1), new BigDecimal("120")),
-                new Purchase(1L, LocalDate.of(2026, 1, 1), new BigDecimal("75")),
-                new Purchase(1L, LocalDate.of(2026, 1, 2), new BigDecimal("200"))));
+        LocalDate currentDate = LocalDate.now();
+        when(purchaseRepository.findByCustomerIdAndPurchaseDateAfterOrderByPurchaseDate(
+            1L, currentDate.minusMonths(3))).thenReturn(List.of(
+            new Purchase(1L, currentDate.minusMonths(1), new BigDecimal("120")),
+            new Purchase(1L, currentDate.minusMonths(2), new BigDecimal("75")),
+            new Purchase(1L, currentDate.minusMonths(2).plusDays(1), new BigDecimal("200"))));
 
         RewardsResponse response = rewardsService.getRewards(1L);
 
         assertThat(response.monthlyRewards()).containsExactly(
-            new MonthlyReward("2026-01", 275), new MonthlyReward("2026-03", 90));
+                new MonthlyReward(currentDate.minusMonths(2).format(java.time.format.DateTimeFormatter.ofPattern("yyyy-MM")), 275),
+                new MonthlyReward(YearMonth.from(currentDate.minusMonths(1)).toString(), 90));
         assertThat(response.totalPoints()).isEqualTo(365);
     }
 }

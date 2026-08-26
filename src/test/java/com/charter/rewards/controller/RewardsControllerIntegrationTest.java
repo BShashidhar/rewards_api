@@ -5,6 +5,8 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
+import java.time.LocalDate;
+import java.time.YearMonth;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
@@ -21,11 +23,14 @@ class RewardsControllerIntegrationTest {
 
     @Test
     void returnsMonthlyAndTotalRewardsForSeededCustomer() throws Exception {
+        LocalDate currentDate = LocalDate.now();
+
         mockMvc.perform(get("/api/rewards/1"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.customerName").value("Alice Johnson"))
                 .andExpect(jsonPath("$.monthlyRewards", hasSize(3)))
-                .andExpect(jsonPath("$.monthlyRewards[0].month").value("2026-01"))
+            .andExpect(jsonPath("$.monthlyRewards[0].month")
+                .value(YearMonth.from(currentDate.minusMonths(2)).toString()))
                 .andExpect(jsonPath("$.monthlyRewards[0].points").value(115))
                 .andExpect(jsonPath("$.totalPoints").value(365));
     }

@@ -41,16 +41,4 @@ public class Purchase {
         this.purchaseDate = purchaseDate;
         this.amount = amount;
     }
-
-    public Long getCustomerId() {
-        return customerId;
-    }
-
-    public LocalDate getPurchaseDate() {
-        return purchaseDate;
-    }
-
-    public BigDecimal getAmount() {
-        return amount;
-    }
 }
