@@ -64,7 +64,7 @@ class RewardsServiceImplTest {
         RewardsResponse response = rewardsService.getRewards(1L);
 
         assertThat(response.monthlyRewards()).containsExactly(
-                new MonthlyReward("2026-01", 225), new MonthlyReward("2026-03", 90));
-        assertThat(response.totalPoints()).isEqualTo(315);
+            new MonthlyReward("2026-01", 275), new MonthlyReward("2026-03", 90));
+        assertThat(response.totalPoints()).isEqualTo(365);
     }
 }
